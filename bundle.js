@@ -73,6 +73,14 @@
 
 	var _sideNav2 = _interopRequireDefault(_sideNav);
 
+	var _topNav = __webpack_require__(31);
+
+	var _topNav2 = _interopRequireDefault(_topNav);
+
+	var _mainContent = __webpack_require__(33);
+
+	var _mainContent2 = _interopRequireDefault(_mainContent);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var app = new _backbone4.default.Application();
@@ -80,6 +88,8 @@
 
 	// Views
 	var sideNav = new _sideNav2.default();
+	var topNav = new _topNav2.default();
+	var mainContent = new _mainContent2.default();
 
 	app.on('start', function () {
 	  _backbone2.default.history.start();
@@ -93,6 +103,12 @@
 	setTimeout(function () {
 	  return mainLayout.sideNav.show(sideNav);
 	}, 2000);
+	setTimeout(function () {
+	  return mainLayout.topNav.show(topNav);
+	}, 1000);
+	setTimeout(function () {
+	  return mainLayout.mainContent.show(mainContent);
+	}, 1000);
 
 	app.start();
 
@@ -18798,6 +18814,146 @@
 	module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
 	    return "<li><a href=\"\">Home</a></li>\n<li><a href=\"\">Thing 1</a></li>\n<li><a href=\"\">Thing 2</a></li>\n<li><a href=\"\">Thing 3</a></li>\n<li><a href=\"\">Thing 4</a></li>";
 	},"useData":true});
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _backbone = __webpack_require__(5);
+
+	var _backbone2 = _interopRequireDefault(_backbone);
+
+	var _topNav = __webpack_require__(32);
+
+	var _topNav2 = _interopRequireDefault(_topNav);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _backbone2.default.ItemView.extend({
+
+	  template: _topNav2.default,
+
+	  tagName: 'ul',
+
+	  id: 'top-nav-list',
+
+	  initialize: function initialize() {
+	    // Fetch some stuff
+	  },
+	  onRender: function onRender() {}
+	});
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Handlebars = __webpack_require__(10);
+	module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+	    return "<li><a href=\"\">Home</a></li>\n<li><a href=\"\">Page 1</a></li>\n<li><a href=\"\">Page 2</a></li>\n<li><a href=\"\">Page 3</a></li>\n<li><a href=\"\">Page 4</a></li>";
+	},"useData":true});
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _backbone = __webpack_require__(5);
+
+	var _backbone2 = _interopRequireDefault(_backbone);
+
+	var _mainContent = __webpack_require__(34);
+
+	var _mainContent2 = _interopRequireDefault(_mainContent);
+
+	var _items = __webpack_require__(35);
+
+	var _items2 = _interopRequireDefault(_items);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	console.log('THE ITEMS', _items2.default);
+
+	exports.default = _backbone2.default.ItemView.extend({
+
+	  template: _mainContent2.default,
+
+	  tagName: 'div',
+
+	  id: 'main-content-inner',
+
+	  initialize: function initialize() {
+	    var self = this;
+
+	    self.opts = {
+	      items: []
+	    };
+
+	    // Faking a GET request to server
+	    setTimeout(function () {
+	      self.opts.items = _items2.default;self.render();
+	    }, 3000);
+	  },
+	  serializeData: function serializeData() {
+	    var self = this;
+
+	    return {
+	      items: self.opts.items
+	    };
+	  }
+	});
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Handlebars = __webpack_require__(10);
+	module.exports = (Handlebars["default"] || Handlebars).template({"1":function(container,depth0,helpers,partials,data) {
+	    var helper;
+
+	  return "<p>"
+	    + container.escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"name","hash":{},"data":data}) : helper)))
+	    + "</p>\n";
+	},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+	    var stack1;
+
+	  return ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+	},"useData":true});
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	module.exports = [
+		{
+			"name": "Todo 1"
+		},
+		{
+			"name": "Todo 2"
+		},
+		{
+			"name": "Todo 3"
+		},
+		{
+			"name": "Todo 4"
+		},
+		{
+			"name": "Todo 5"
+		},
+		{
+			"name": "Todo 6"
+		}
+	];
 
 /***/ }
 /******/ ]);

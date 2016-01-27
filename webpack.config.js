@@ -19,7 +19,8 @@ module.exports = {
           presets: ['es2015', 'stage-0']
         }
       },
-      { test: /\.hbs$/, loader: "handlebars-loader" }
+      { test: /\.hbs$/, loader: "handlebars-loader" },
+      { test: /\.json$/, loader: "json-loader" }
     ]
   },
   resolve: {
