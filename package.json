@@ -1,0 +1,27 @@
+{
+  "name": "bb-loading-view",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "backbone": "^1.2.3",
+    "backbone.marionette": "^2.4.4",
+    "handlebars": "^4.0.5",
+    "jquery": "^2.2.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "babel": "^6.3.26",
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "handlebars-loader": "^1.1.4",
+    "webpack": "^1.12.12"
+  }
+}
