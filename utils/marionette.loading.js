@@ -21,10 +21,7 @@ _.extend(Marionette.View.prototype, {
         if (LoadingView && !this.__showingLoadingView) {
             this.__showingLoadingView = true;
             var loadingView = this.__loadingView = new LoadingView({ collection: this.collection, model: this.model });
-
-            console.log('mainContentView', this);
             this.$el.empty().append(loadingView.$el);
-            // this.$el.empty().append('<h1>Hello there!!!</h1>');
 
             loadingView.render();
         }
