@@ -18868,9 +18868,13 @@
 	  value: true
 	});
 
-	var _backbone = __webpack_require__(5);
+	var _marionette = __webpack_require__(36);
 
-	var _backbone2 = _interopRequireDefault(_backbone);
+	var _marionette2 = _interopRequireDefault(_marionette);
+
+	var _loading = __webpack_require__(37);
+
+	var _loading2 = _interopRequireDefault(_loading);
 
 	var _mainContent = __webpack_require__(34);
 
@@ -18882,9 +18886,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	console.log('THE ITEMS', _items2.default);
+	exports.default = _marionette2.default.LoadingItemView.extend({
 
-	exports.default = _backbone2.default.ItemView.extend({
+	  loadingView: _loading2.default,
 
 	  template: _mainContent2.default,
 
@@ -18902,7 +18906,7 @@
 	    // Faking a GET request to server
 	    setTimeout(function () {
 	      self.opts.items = _items2.default;self.render();
-	    }, 3000);
+	    }, 10000);
 	  },
 	  serializeData: function serializeData() {
 	    var self = this;
@@ -18910,6 +18914,14 @@
 	    return {
 	      items: self.opts.items
 	    };
+	  },
+	  onRender: function onRender() {
+	    var self = this;
+
+	    if (self.opts.items.length === 0) {
+	      // Init loadging view
+	      self.__showLoading.call(self);
+	    }
 	  }
 	});
 
@@ -18927,7 +18939,8 @@
 	},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
 	    var stack1;
 
-	  return ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+	  return "<h2>The Main Content</h2>\n"
+	    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 	},"useData":true});
 
 /***/ },
@@ -18954,6 +18967,151 @@
 			"name": "Todo 6"
 		}
 	];
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _underscore = __webpack_require__(4);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _backbone = __webpack_require__(5);
+
+	var _backbone2 = _interopRequireDefault(_backbone);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	_underscore2.default.extend(_backbone2.default.View.prototype, {
+	    getLoadingView: function getLoadingView() {
+	        return _backbone2.default.getOption(this, "loadingView");
+	    },
+	    __hideLoading: function __hideLoading(force) {
+	        --this.__loadingCount;
+	        if (this.__loadingCount < 0) this.__loadingCount = 0;
+	        if (this.__loadingCount == 0 || force) {
+	            delete this.__showingLoadingView;
+	            this.__loadingView && this.__loadingView.destroy();
+	            this.render();
+	        }
+	    },
+	    __showLoading: function __showLoading() {
+	        this.__loadingCount = this.__loadingCount || 0;
+	        ++this.__loadingCount;
+	        var LoadingView = this.getLoadingView();
+	        if (LoadingView && !this.__showingLoadingView) {
+	            this.__showingLoadingView = true;
+	            var loadingView = this.__loadingView = new LoadingView({ collection: this.collection, model: this.model });
+
+	            console.log('mainContentView', this);
+	            this.$el.empty().append(loadingView.$el);
+	            // this.$el.empty().append('<h1>Hello there!!!</h1>');
+
+	            loadingView.render();
+	        }
+	    },
+	    __loadingEvents: function __loadingEvents() {
+	        _underscore2.default.each(['model', 'collection'], function (attr) {
+	            var target = this[attr];
+	            if (target) {
+	                this.listenTo(target, 'request', this.__showLoading, this);
+	                this.listenTo(target, 'loading', this.__showLoading, this);
+	                this.listenTo(target, 'sync', this.__hideLoading, this);
+	                this.listenTo(target, 'loaded', this.__hideLoading, this);
+	            }
+	        }, this);
+	    },
+
+	    setupMarionetteLoading: function setupMarionetteLoading() {
+	        this.__loadingEvents();
+	        if (this.addItemView) {
+	            this.addItemView = function () {
+	                if (!this.__showingLoadingView) {
+	                    // add is triggered before sync. if so do not render
+	                    _backbone2.default.CompositeView.prototype.addItemView.apply(this, arguments);
+	                }
+	            };
+	        }
+	    }
+	});
+
+	_backbone2.default.LoadingItemView = _backbone2.default.ItemView.extend({
+	    constructor: function constructor() {
+	        _backbone2.default.ItemView.prototype.constructor.apply(this, arguments);
+	        this.setupMarionetteLoading();
+	    }
+	});
+
+	_backbone2.default.LoadingCollectionView = _backbone2.default.CollectionView.extend({
+	    constructor: function constructor() {
+	        _backbone2.default.CollectionView.prototype.constructor.apply(this, arguments);
+	        this.setupMarionetteLoading();
+	    }
+	});
+
+	_backbone2.default.LoadingCompositeView = _backbone2.default.CompositeView.extend({
+	    constructor: function constructor() {
+	        _backbone2.default.CompositeView.prototype.constructor.apply(this, arguments);
+	        this.setupMarionetteLoading();
+	    }
+	});
+
+	_backbone2.default.LoadingLayout = _backbone2.default.LayoutView.extend({
+	    constructor: function constructor() {
+	        _backbone2.default.Layout.prototype.constructor.apply(this, arguments);
+	        this.setupMarionetteLoading();
+	    }
+	});
+
+	exports.default = _backbone2.default;
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _backbone = __webpack_require__(5);
+
+	var _backbone2 = _interopRequireDefault(_backbone);
+
+	var _loading = __webpack_require__(38);
+
+	var _loading2 = _interopRequireDefault(_loading);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _backbone2.default.ItemView.extend({
+
+	  template: _loading2.default,
+
+	  ui: {
+	    loader: '.loader'
+	  },
+
+	  onRender: function onRender() {
+	    console.log('Showing the loading view!');
+	  }
+	});
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Handlebars = __webpack_require__(10);
+	module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+	    return "<h1>LOADING...</h1>";
+	},"useData":true});
 
 /***/ }
 /******/ ]);
